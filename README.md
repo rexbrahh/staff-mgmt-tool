@@ -1,6 +1,6 @@
 # Staff Management Tool
 
-A comprehensive web-based staff management solution for project assignment, progress tracking, and team communication with role-based access controls.
+A simple web-based staff management solution for project assignment, progress tracking, and team communication with role-based access controls.
 
 ## Features
 
