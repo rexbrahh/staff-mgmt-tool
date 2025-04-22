@@ -1,19 +1,14 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-export enum UserRole {
-  TEAM_LEAD = 'TEAM_LEAD',
-  DEVELOPER = 'DEVELOPER'
-}
-
 export interface IUser extends Document {
+  _id: mongoose.Types.ObjectId;
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-  role: UserRole;
-  createdAt: Date;
-  updatedAt: Date;
+  role: 'admin' | 'manager' | 'employee';
+  isActive: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -29,7 +24,7 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
-      minlength: 8,
+      minlength: 6,
     },
     firstName: {
       type: String,
@@ -43,8 +38,12 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: Object.values(UserRole),
-      required: true,
+      enum: ['admin', 'manager', 'employee'],
+      default: 'employee',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {
@@ -67,7 +66,11 @@ userSchema.pre('save', async function (next) {
 
 // Method to compare password for login
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+  try {
+    return await bcrypt.compare(candidatePassword, this.password);
+  } catch (error) {
+    throw error;
+  }
 };
 
-export const User = model<IUser>('User', userSchema); 
+export const User = mongoose.model<IUser>('User', userSchema); 

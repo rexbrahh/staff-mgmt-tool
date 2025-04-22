@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../utils/logger';
 
 export class AppError extends Error {
   statusCode: number;
@@ -23,12 +22,6 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   if (err instanceof AppError) {
-    logger.error({
-      message: err.message,
-      stack: err.stack,
-      statusCode: err.statusCode,
-    });
-
     return res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
@@ -36,14 +29,10 @@ export const errorHandler = (
   }
 
   // Log unexpected errors
-  logger.error({
-    message: err.message,
-    stack: err.stack,
-  });
+  console.error('ERROR 💥', err);
 
-  // Send generic error response for unexpected errors
   return res.status(500).json({
     status: 'error',
-    message: 'Internal server error',
+    message: 'Something went wrong!',
   });
 }; 
