@@ -1,8 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import passport from './config/passport';
+import passport from 'passport';
+import './config/passport';
 import authRoutes from './routes/auth.routes';
+import testRoutes from './routes/test.routes';
+import staffRoutes from './routes/staff.routes';
+import attendanceRoutes from './routes/attendance.routes';
+import leaveRoutes from './routes/leave.routes';
 
 const app = express();
 
@@ -19,6 +24,10 @@ app.use(passport.initialize());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/test', testRoutes);
+app.use('/api/staff', staffRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/leave', leaveRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

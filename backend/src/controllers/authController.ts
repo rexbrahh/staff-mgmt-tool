@@ -1,13 +1,7 @@
 import { Request, Response } from 'express';
-import jwt, { SignOptions } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
-import { authConfig } from '../config/auth.config';
-
-// Define a type for our user structure
-interface UserInfo {
-  _id: string;
-  role: string;
-}
+import { JWT_SECRET } from '../config/auth';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -31,12 +25,17 @@ export const register = async (req: Request, res: Response) => {
     await user.save();
 
     // Generate JWT token
-    const payload = { _id: user._id.toString(), role: user.role };
-    const options: SignOptions = { expiresIn: '24h' };
-    const token = jwt.sign(payload, authConfig.jwtSecret, options);
+    const token = jwt.sign(
+      { 
+        userId: user._id,
+        email: user.email,
+        role: user.role 
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
 
     res.status(201).json({
-      message: 'User registered successfully',
       token,
       user: {
         id: user._id,
@@ -47,7 +46,8 @@ export const register = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error registering user', error });
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Error registering user' });
   }
 };
 
@@ -61,19 +61,29 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Check password
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
+    // Check if user is active
+    if (!user.isActive) {
+      return res.status(401).json({ message: 'Account is deactivated' });
+    }
+
+    // Verify password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Generate JWT token
-    const payload = { _id: user._id.toString(), role: user.role };
-    const options: SignOptions = { expiresIn: '24h' };
-    const token = jwt.sign(payload, authConfig.jwtSecret, options);
+    const token = jwt.sign(
+      { 
+        userId: user._id,
+        email: user.email,
+        role: user.role 
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
 
     res.json({
-      message: 'Login successful',
       token,
       user: {
         id: user._id,
@@ -84,34 +94,20 @@ export const login = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error logging in', error });
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Error logging in' });
   }
 };
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-    
-    // Use type assertion to ensure TypeScript recognizes the user structure
-    const userInfo = req.user as UserInfo;
-    
-    const user = await User.findById(userInfo._id);
+    const user = await User.findById(req.user.userId).select('-password');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    res.json({
-      user: {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-      },
-    });
+    res.json(user);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching profile', error });
+    console.error('Get profile error:', error);
+    res.status(500).json({ message: 'Error fetching profile' });
   }
 }; 

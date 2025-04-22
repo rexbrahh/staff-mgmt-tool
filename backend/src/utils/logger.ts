@@ -1,26 +1,43 @@
-import winston from 'winston';
+type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
-const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      ),
-    }),
-    new winston.transports.File({ 
-      filename: 'logs/error.log', 
-      level: 'error' 
-    }),
-    new winston.transports.File({ 
-      filename: 'logs/combined.log' 
-    }),
-  ],
-});
+interface LogMessage {
+  level: LogLevel;
+  message: string;
+  timestamp: string;
+  [key: string]: any;
+}
 
-export { logger }; 
+class Logger {
+  private formatMessage(level: LogLevel, message: string, meta?: any): LogMessage {
+    return {
+      level,
+      message,
+      timestamp: new Date().toISOString(),
+      ...meta,
+    };
+  }
+
+  info(message: string, meta?: any) {
+    const logMessage = this.formatMessage('info', message, meta);
+    console.log(JSON.stringify(logMessage));
+  }
+
+  warn(message: string, meta?: any) {
+    const logMessage = this.formatMessage('warn', message, meta);
+    console.warn(JSON.stringify(logMessage));
+  }
+
+  error(message: string, meta?: any) {
+    const logMessage = this.formatMessage('error', message, meta);
+    console.error(JSON.stringify(logMessage));
+  }
+
+  debug(message: string, meta?: any) {
+    if (process.env.NODE_ENV === 'development') {
+      const logMessage = this.formatMessage('debug', message, meta);
+      console.debug(JSON.stringify(logMessage));
+    }
+  }
+}
+
+export const logger = new Logger(); 

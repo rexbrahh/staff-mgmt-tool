@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { register, login, getProfile } from '../controllers/auth.controller';
-import passport from 'passport';
+import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 
@@ -9,6 +9,6 @@ router.post('/register', register);
 router.post('/login', login);
 
 // Protected routes
-router.get('/profile', passport.authenticate('jwt', { session: false }), getProfile);
+router.get('/profile', authenticate, getProfile);
 
 export default router; 
