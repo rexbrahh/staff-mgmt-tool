@@ -31,6 +31,11 @@
    - Fixed type checking for user roles and permissions
    - Updated route handlers to work seamlessly with existing middleware
 
+6. **Version Control Updates**
+   - Created development branch for ongoing work
+   - Implemented branching strategy: development work on `dev` branch, stable releases on `main` branch
+   - All future features to be implemented in feature branches off `dev`
+
 ### Next Steps
 - Implement department management features
 - Create frontend interfaces for staff management
