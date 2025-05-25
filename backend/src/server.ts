@@ -1,7 +1,25 @@
-import { app } from './app';
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectDB } from './config/database';
+import authRoutes from './routes/auth.routes';
 
-const PORT = process.env.PORT || 5001;
+dotenv.config();
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const app = express();
+const port = process.env.PORT || 5001;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/api/auth', authRoutes);
+
+// Connect to MongoDB
+connectDB();
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 }); 

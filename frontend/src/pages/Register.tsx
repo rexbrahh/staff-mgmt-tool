@@ -8,27 +8,41 @@ import {
   Typography,
   Container,
   Paper,
+  MenuItem,
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { login } from '../store/slices/authSlice';
+import { register } from '../store/slices/authSlice';
 import { AppDispatch, RootState } from '../store';
-import { validateLoginForm, ValidationErrors } from '../utils/validation';
+import { RegisterData } from '../services/auth.service';
+import { validateRegisterForm, ValidationErrors } from '../utils/validation';
 
-const Login: React.FC = () => {
+const roles = [
+  { value: 'employee' as const, label: 'Employee' },
+  { value: 'manager' as const, label: 'Manager' },
+  { value: 'admin' as const, label: 'Admin' },
+] as const;
+
+const Register: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterData>({
     email: '',
     password: '',
+    firstName: '',
+    lastName: '',
+    role: 'employee',
   });
-  
+
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [touched, setTouched] = useState({
     email: false,
     password: false,
+    firstName: false,
+    lastName: false,
+    role: false,
   });
 
   const handleBlur = (field: keyof typeof touched) => {
@@ -48,16 +62,22 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const errors = validateLoginForm(formData.email, formData.password);
+    const errors = validateRegisterForm(
+      formData.email,
+      formData.password,
+      formData.firstName,
+      formData.lastName,
+      formData.role
+    );
     setValidationErrors(errors);
     
     if (Object.keys(errors).length === 0) {
       try {
-        await dispatch(login(formData)).unwrap();
+        await dispatch(register(formData)).unwrap();
         navigate('/');
       } catch (err) {
         // Error is handled by the auth slice
-        console.error('Login failed:', err);
+        console.error('Registration failed:', err);
       }
     }
   };
@@ -74,7 +94,7 @@ const Login: React.FC = () => {
       >
         <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
           <Typography component="h1" variant="h5" align="center" gutterBottom>
-            Sign In
+            Sign Up
           </Typography>
           
           {error && (
@@ -88,11 +108,41 @@ const Login: React.FC = () => {
               margin="normal"
               required
               fullWidth
+              id="firstName"
+              label="First Name"
+              name="firstName"
+              autoComplete="given-name"
+              autoFocus
+              value={formData.firstName}
+              onChange={handleChange}
+              onBlur={() => handleBlur('firstName')}
+              error={touched.firstName && !!validationErrors.firstName}
+              helperText={touched.firstName && validationErrors.firstName}
+              disabled={loading}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              autoComplete="family-name"
+              value={formData.lastName}
+              onChange={handleChange}
+              onBlur={() => handleBlur('lastName')}
+              error={touched.lastName && !!validationErrors.lastName}
+              helperText={touched.lastName && validationErrors.lastName}
+              disabled={loading}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
               value={formData.email}
               onChange={handleChange}
               onBlur={() => handleBlur('email')}
@@ -108,7 +158,7 @@ const Login: React.FC = () => {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               value={formData.password}
               onChange={handleChange}
               onBlur={() => handleBlur('password')}
@@ -116,6 +166,27 @@ const Login: React.FC = () => {
               helperText={touched.password && validationErrors.password}
               disabled={loading}
             />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              select
+              id="role"
+              label="Role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              onBlur={() => handleBlur('role')}
+              error={touched.role && !!validationErrors.role}
+              helperText={touched.role && validationErrors.role}
+              disabled={loading}
+            >
+              {roles.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
             <Button
               type="submit"
               fullWidth
@@ -123,7 +194,7 @@ const Login: React.FC = () => {
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={24} /> : 'Sign In'}
+              {loading ? <CircularProgress size={24} /> : 'Sign Up'}
             </Button>
           </Box>
         </Paper>
@@ -132,4 +203,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default Register; 
