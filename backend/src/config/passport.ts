@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import { User, IUser } from '../models/User';
+import { UserService } from '../models/User';
 import { authConfig } from './auth.config';
 import { Request, Response, NextFunction } from 'express';
 
@@ -12,11 +12,11 @@ passport.use(
     },
     async (payload, done) => {
       try {
-        const user = await User.findById(payload._id);
+        const user = await UserService.findUserById(payload.id);
         if (!user) {
           return done(null, false);
         }
-        return done(null, { _id: user._id.toString(), role: user.role });
+        return done(null, { id: user.id, role: user.role });
       } catch (error) {
         return done(error, false);
       }
@@ -26,7 +26,7 @@ passport.use(
 
 // Define a type for our user structure in passport
 interface UserInfo {
-  _id: string;
+  id: string;
   role: string;
 }
 

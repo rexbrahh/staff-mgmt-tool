@@ -3,7 +3,7 @@ import passport from 'passport';
 
 // Define a type for our user structure
 interface UserInfo {
-  _id: string;
+  id: string;
   role: string;
 }
 

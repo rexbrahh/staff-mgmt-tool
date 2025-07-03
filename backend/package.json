@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.11.1",
     "@types/helmet": "^0.0.48",
     "@types/passport": "^1.0.17",
     "bcryptjs": "^2.4.3",
@@ -44,6 +45,7 @@
     "jest": "^29.5.0",
     "nodemon": "^3.1.9",
     "prettier": "^2.8.7",
+    "prisma": "^6.11.1",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",

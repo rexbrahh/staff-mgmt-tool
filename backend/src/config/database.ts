@@ -1,29 +1,48 @@
-import mongoose from 'mongoose';
+import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/staff-mgmt-tool';
+// Create a global Prisma client instance
+declare global {
+  var __prisma: PrismaClient | undefined;
+}
+
+// Initialize Prisma client
+export const prisma = globalThis.__prisma || new PrismaClient({
+  log: ['query', 'info', 'warn', 'error'],
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.__prisma = prisma;
+}
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('MongoDB connected successfully');
+    await prisma.$connect();
+    console.log('✅ PostgreSQL connected successfully via Prisma');
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error('❌ Database connection error:', error);
     process.exit(1);
   }
 };
 
-mongoose.connection.on('error', (err) => {
-  console.error('MongoDB connection error:', err);
-});
+export const disconnectDB = async () => {
+  try {
+    await prisma.$disconnect();
+    console.log('PostgreSQL disconnected');
+  } catch (error) {
+    console.error('Error disconnecting from database:', error);
+  }
+};
 
-mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected');
-});
-
+// Graceful shutdown
 process.on('SIGINT', async () => {
-  await mongoose.connection.close();
+  await disconnectDB();
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  await disconnectDB();
   process.exit(0);
 }); 
