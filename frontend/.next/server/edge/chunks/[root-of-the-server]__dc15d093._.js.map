@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 23, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/src/middleware.ts"],"sourcesContent":["import { NextResponse } from 'next/server';\nimport type { NextRequest } from 'next/server';\n\nexport function middleware(request: NextRequest) {\n  const token = request.cookies.get('token')?.value;\n  const { pathname } = request.nextUrl;\n\n  // Allow access to login and home page without authentication\n  if (pathname === '/login' || pathname === '/') {\n    return NextResponse.next();\n  }\n\n  // Redirect to login if no token and trying to access protected routes\n  if (!token && pathname.startsWith('/dashboard')) {\n    return NextResponse.redirect(new URL('/login', request.url));\n  }\n\n  return NextResponse.next();\n}\n\nexport const config = {\n  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],\n};"],"names":[],"mappings":";;;;AAAA;AAAA;;AAGO,SAAS,WAAW,OAAoB;IAC7C,MAAM,QAAQ,QAAQ,OAAO,CAAC,GAAG,CAAC,UAAU;IAC5C,MAAM,EAAE,QAAQ,EAAE,GAAG,QAAQ,OAAO;IAEpC,6DAA6D;IAC7D,IAAI,aAAa,YAAY,aAAa,KAAK;QAC7C,OAAO,6LAAA,CAAA,eAAY,CAAC,IAAI;IAC1B;IAEA,sEAAsE;IACtE,IAAI,CAAC,SAAS,SAAS,UAAU,CAAC,eAAe;QAC/C,OAAO,6LAAA,CAAA,eAAY,CAAC,QAAQ,CAAC,IAAI,IAAI,UAAU,QAAQ,GAAG;IAC5D;IAEA,OAAO,6LAAA,CAAA,eAAY,CAAC,IAAI;AAC1B;AAEO,MAAM,SAAS;IACpB,SAAS;QAAC;KAAoD;AAChE"}}]
+}
