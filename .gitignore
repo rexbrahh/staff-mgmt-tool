@@ -39,3 +39,10 @@ docker-compose.override.yml
 
 # Temp frontend
 temp-frontend/ 
+
+.claude/
+CLAUDE.md 
+
+docker-compose.yml
+
+staff mgmt tool project blueprint.md

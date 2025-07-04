@@ -6,8 +6,8 @@
   "static/chunks/node_modules_axios_lib_99999129._.js",
   "static/chunks/node_modules_@mui_system_esm_1848a5cf._.js",
   "static/chunks/node_modules_@mui_material_esm_d7cf5019._.js",
-  "static/chunks/node_modules_e45e1a68._.js",
-  "static/chunks/src_5e776722._.js"
+  "static/chunks/node_modules_7a60fcb4._.js",
+  "static/chunks/src_b50e3420._.js"
 ],
     source: "dynamic"
 });
