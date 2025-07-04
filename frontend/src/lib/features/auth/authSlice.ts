@@ -17,13 +17,29 @@ interface AuthState {
   error: string | null;
 }
 
-const initialState: AuthState = {
-  user: null,
-  token: null,
-  isAuthenticated: false,
-  loading: false,
-  error: null,
+// Initialize from localStorage if available (client-side only)
+const getInitialState = (): AuthState => {
+  if (typeof window === 'undefined') {
+    return {
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      loading: false,
+      error: null,
+    };
+  }
+
+  const token = localStorage.getItem('token');
+  return {
+    user: null,
+    token,
+    isAuthenticated: !!token,
+    loading: false,
+    error: null,
+  };
 };
+
+const initialState: AuthState = getInitialState();
 
 export const loginUser = createAsyncThunk(
   'auth/login',

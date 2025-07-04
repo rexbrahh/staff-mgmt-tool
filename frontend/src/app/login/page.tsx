@@ -30,12 +30,18 @@ export default function LoginPage() {
     try {
       setError('');
       const result = await dispatch(loginUser(values));
+      
       if (result.meta.requestStatus === 'fulfilled') {
-        router.push('/dashboard');
+        // Small delay to ensure Redux state is updated
+        setTimeout(() => {
+          router.replace('/dashboard');
+        }, 100);
+      } else if (result.meta.requestStatus === 'rejected') {
+        setError(result.error?.message || 'Invalid credentials');
       } else {
-        setError('Invalid credentials');
+        setError('Login failed. Please try again.');
       }
-    } catch {
+    } catch (error) {
       setError('Login failed. Please try again.');
     }
   };
