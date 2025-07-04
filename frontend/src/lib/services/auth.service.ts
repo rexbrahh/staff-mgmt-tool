@@ -20,11 +20,24 @@ api.interceptors.request.use((config) => {
 
 export const authService = {
   async login(credentials: { email: string; password: string }) {
-    const response = await api.post('/auth/login', credentials);
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
+    console.log('🌐 AuthService: Making API call to:', `${API_URL}/auth/login`);
+    
+    try {
+      const response = await api.post('/auth/login', credentials);
+      console.log('📡 AuthService: API response received:', response.data);
+      
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        console.log('💾 AuthService: Token saved to localStorage');
+      }
+      
+      return response.data;
+    } catch (error: any) {
+      console.error('🚨 AuthService: API call failed:', error);
+      console.error('📄 Error response:', error.response?.data);
+      console.error('🔢 Error status:', error.response?.status);
+      throw error;
     }
-    return response.data;
   },
 
   async register(userData: { email: string; password: string; firstName: string; lastName: string }) {
