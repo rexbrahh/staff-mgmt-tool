@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { useAppDispatch } from '../../lib/hooks';
+import { useAppDispatch, useAppSelector } from '../../lib/hooks';
 import { loginUser } from '../../lib/features/auth/authSlice';
 
 const validationSchema = Yup.object({
@@ -25,23 +25,39 @@ export default function LoginPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [error, setError] = useState('');
+  const { isAuthenticated, user, loading } = useAppSelector((state) => state.auth);
+  
+  // Debug current auth state
+  console.log('🏠 LoginPage: Current auth state:', { isAuthenticated, user: user?.email, loading });
 
   const handleSubmit = async (values: { email: string; password: string }) => {
     try {
+      console.log('🚀 Login attempt started');
       setError('');
+      console.log('📧 Credentials:', { email: values.email, password: '***' });
+      
       const result = await dispatch(loginUser(values));
+      console.log('📬 Redux dispatch result:', result);
+      console.log('📊 Result meta:', result.meta);
+      console.log('🔍 Request status:', result.meta?.requestStatus);
       
       if (result.meta.requestStatus === 'fulfilled') {
+        console.log('✅ Login fulfilled, payload:', result.payload);
+        console.log('⏰ Setting timeout for redirect...');
         // Small delay to ensure Redux state is updated
         setTimeout(() => {
+          console.log('🔀 Executing redirect to dashboard');
           router.replace('/dashboard');
         }, 100);
       } else if (result.meta.requestStatus === 'rejected') {
-        setError(result.error?.message || 'Invalid credentials');
+        console.log('❌ Login rejected:', result);
+        setError('Invalid credentials');
       } else {
+        console.log('❓ Unknown login result:', result);
         setError('Login failed. Please try again.');
       }
     } catch (error) {
+      console.error('💥 Login error in catch:', error);
       setError('Login failed. Please try again.');
     }
   };

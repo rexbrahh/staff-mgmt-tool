@@ -17,29 +17,13 @@ interface AuthState {
   error: string | null;
 }
 
-// Initialize from localStorage if available (client-side only)
-const getInitialState = (): AuthState => {
-  if (typeof window === 'undefined') {
-    return {
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      loading: false,
-      error: null,
-    };
-  }
-
-  const token = localStorage.getItem('token');
-  return {
-    user: null,
-    token,
-    isAuthenticated: !!token,
-    loading: false,
-    error: null,
-  };
+const initialState: AuthState = {
+  user: null,
+  token: null,
+  isAuthenticated: false,
+  loading: false,
+  error: null,
 };
-
-const initialState: AuthState = getInitialState();
 
 export const loginUser = createAsyncThunk(
   'auth/login',
@@ -53,6 +37,14 @@ export const registerUser = createAsyncThunk(
   'auth/register',
   async (userData: { email: string; password: string; firstName: string; lastName: string }) => {
     const response = await authService.register(userData);
+    return response;
+  }
+);
+
+export const fetchUserProfile = createAsyncThunk(
+  'auth/fetchProfile',
+  async () => {
+    const response = await authService.getProfile();
     return response;
   }
 );
@@ -77,6 +69,16 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.error = null;
     },
+    initializeAuth: (state, action: PayloadAction<{ token: string | null }>) => {
+      console.log('🔧 Redux: initializeAuth called with token:', action.payload.token ? 'YES' : 'NO');
+      if (action.payload.token) {
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        console.log('✅ Redux: Auth initialized with token');
+      } else {
+        console.log('❌ Redux: No token found, user not authenticated');
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -85,11 +87,13 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log('🔄 Redux: loginUser.fulfilled action received:', action.payload);
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isAuthenticated = true;
         state.error = null;
+        console.log('✅ Redux: Auth state updated - isAuthenticated:', true);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -109,9 +113,21 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Registration failed';
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        console.log('👤 Redux: fetchUserProfile.fulfilled, user data:', action.payload);
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+      })
+      .addCase(fetchUserProfile.rejected, (state) => {
+        // If fetching profile fails, clear authentication
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        authService.logout();
       });
   },
 });
 
-export const { logout, clearError, setCredentials } = authSlice.actions;
+export const { logout, clearError, setCredentials, initializeAuth } = authSlice.actions;
 export default authSlice.reducer;

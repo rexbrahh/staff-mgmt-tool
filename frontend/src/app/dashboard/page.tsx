@@ -23,25 +23,45 @@ import { logout } from '../../lib/features/auth/authSlice';
 export default function DashboardPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated, token, loading } = useAppSelector((state) => state.auth);
   const [mounted, setMounted] = useState(false);
 
+  // Debug dashboard state
+  console.log('🏢 Dashboard: Component rendered');
+  console.log('🏢 Dashboard: Auth state:', { 
+    isAuthenticated, 
+    user: user?.email, 
+    token: token ? 'YES' : 'NO', 
+    mounted,
+    loading 
+  });
+
   useEffect(() => {
+    console.log('🏢 Dashboard: Mounting...');
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (mounted && !isAuthenticated) {
+    console.log('🏢 Dashboard: Auth check - mounted:', mounted, 'isAuthenticated:', isAuthenticated, 'loading:', loading);
+    
+    // Don't redirect while still loading user data
+    if (mounted && !loading && !isAuthenticated) {
+      console.log('❌ Dashboard: Not authenticated and not loading, redirecting to login');
       router.push('/login');
+    } else if (mounted && isAuthenticated) {
+      console.log('✅ Dashboard: User is authenticated, staying on dashboard');
+    } else if (mounted && loading) {
+      console.log('⏳ Dashboard: Still loading user data, waiting...');
     }
-  }, [isAuthenticated, router, mounted]);
+  }, [isAuthenticated, router, mounted, loading]);
 
   const handleLogout = () => {
     dispatch(logout());
     router.push('/');
   };
 
-  if (!mounted || !isAuthenticated) {
+  // Show loading while waiting for auth state or user data
+  if (!mounted || loading || (!isAuthenticated && !loading)) {
     return null;
   }
 
