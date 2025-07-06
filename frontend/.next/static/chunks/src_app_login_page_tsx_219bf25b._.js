@@ -38,6 +38,7 @@ const validationSchema = (0, __TURBOPACK__imported__module__$5b$project$5d2f$nod
 });
 function LoginPage() {
     _s();
+    console.log('🎬 LoginPage: Component function called');
     const dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$hooks$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
@@ -45,12 +46,24 @@ function LoginPage() {
         "LoginPage.useAppSelector": (state)=>state.auth
     }["LoginPage.useAppSelector"]);
     // Debug current auth state
+    console.log('🏠 LoginPage: Component rendered/re-rendered');
     console.log('🏠 LoginPage: Current auth state:', {
         isAuthenticated,
         user: user?.email,
         loading
     });
+    console.log('🏠 LoginPage: Dependencies loaded successfully');
+    console.log('🏠 LoginPage: dispatch type:', typeof dispatch);
+    console.log('🏠 LoginPage: router type:', typeof router);
+    // Add click handler debugging
+    const handleButtonClick = (e)=>{
+        console.log('🖱️ BUTTON CLICKED!', e);
+        console.log('🖱️ Button event type:', e.type);
+        console.log('🖱️ Button target:', e.target);
+    };
     const handleSubmit = async (values)=>{
+        console.log('🎯 handleSubmit CALLED!!! Values:', values);
+        console.log('🎯 handleSubmit function type:', typeof handleSubmit);
         try {
             console.log('🚀 Login attempt started');
             setError('');
@@ -64,15 +77,18 @@ function LoginPage() {
             console.log('🔍 Request status:', result.meta?.requestStatus);
             if (result.meta.requestStatus === 'fulfilled') {
                 console.log('✅ Login fulfilled, payload:', result.payload);
-                console.log('⏰ Setting timeout for redirect...');
-                // Small delay to ensure Redux state is updated
+                console.log('🔀 Redirecting to dashboard...');
+                // Small delay to ensure cookie is set
                 setTimeout(()=>{
-                    console.log('🔀 Executing redirect to dashboard');
-                    router.replace('/dashboard');
+                    router.push('/dashboard');
                 }, 100);
             } else if (result.meta.requestStatus === 'rejected') {
                 console.log('❌ Login rejected:', result);
-                setError('Invalid credentials');
+                console.log('❌ Rejection payload:', result.payload);
+                console.log('❌ Rejection error:', result.error);
+                // Extract more detailed error message
+                const errorMsg = result.error?.message || 'Invalid credentials. Please check your email and password.';
+                setError(errorMsg);
             } else {
                 console.log('❓ Unknown login result:', result);
                 setError('Login failed. Please try again.');
@@ -101,7 +117,48 @@ function LoginPage() {
                     children: "Login"
                 }, void 0, false, {
                     fileName: "[project]/src/app/login/page.tsx",
-                    lineNumber: 68,
+                    lineNumber: 89,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Box$2f$Box$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Box$3e$__["Box"], {
+                    sx: {
+                        mb: 2,
+                        p: 2,
+                        bgcolor: 'info.light',
+                        borderRadius: 1
+                    },
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Typography$2f$Typography$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Typography$3e$__["Typography"], {
+                        variant: "body2",
+                        color: "info.contrastText",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                children: "Test Credentials:"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/login/page.tsx",
+                                lineNumber: 96,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                fileName: "[project]/src/app/login/page.tsx",
+                                lineNumber: 96,
+                                columnNumber: 47
+                            }, this),
+                            "Email: test@example.com",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                fileName: "[project]/src/app/login/page.tsx",
+                                lineNumber: 97,
+                                columnNumber: 36
+                            }, this),
+                            "Password: password123"
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/login/page.tsx",
+                        lineNumber: 95,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/src/app/login/page.tsx",
+                    lineNumber: 94,
                     columnNumber: 9
                 }, this),
                 error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Alert$2f$Alert$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Alert$3e$__["Alert"], {
@@ -112,17 +169,32 @@ function LoginPage() {
                     children: error
                 }, void 0, false, {
                     fileName: "[project]/src/app/login/page.tsx",
-                    lineNumber: 73,
+                    lineNumber: 104,
                     columnNumber: 11
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$formik$2f$dist$2f$formik$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Formik"], {
                     initialValues: {
-                        email: '',
-                        password: ''
+                        email: 'test@example.com',
+                        password: 'password123'
                     },
                     validationSchema: validationSchema,
-                    onSubmit: handleSubmit,
-                    children: ({ errors, touched, isSubmitting })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$formik$2f$dist$2f$formik$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Form"], {
+                    onSubmit: (values, formikBag)=>{
+                        console.log('📝 Formik onSubmit triggered!', values);
+                        console.log('📝 Formik bag:', formikBag);
+                        return handleSubmit(values);
+                    },
+                    children: ({ errors, touched, isSubmitting, handleSubmit: formikHandleSubmit })=>{
+                        console.log('📋 Formik render function called');
+                        console.log('📋 isSubmitting:', isSubmitting);
+                        console.log('📋 errors:', errors);
+                        console.log('📋 formikHandleSubmit type:', typeof formikHandleSubmit);
+                        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$formik$2f$dist$2f$formik$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Form"], {
+                            onSubmit: (e)=>{
+                                console.log('🔥 FORM onSubmit triggered!', e);
+                                console.log('🔥 Event target:', e.target);
+                                console.log('🔥 Event type:', e.type);
+                                formikHandleSubmit(e);
+                            },
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Box$2f$Box$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Box$3e$__["Box"], {
                                     sx: {
@@ -138,12 +210,12 @@ function LoginPage() {
                                         helperText: touched.email && errors.email
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/login/page.tsx",
-                                        lineNumber: 86,
+                                        lineNumber: 132,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.tsx",
-                                    lineNumber: 85,
+                                    lineNumber: 131,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Box$2f$Box$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Box$3e$__["Box"], {
@@ -160,12 +232,12 @@ function LoginPage() {
                                         helperText: touched.password && errors.password
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/login/page.tsx",
-                                        lineNumber: 98,
+                                        lineNumber: 144,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.tsx",
-                                    lineNumber: 97,
+                                    lineNumber: 143,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Button$2f$Button$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Button$3e$__["Button"], {
@@ -174,32 +246,39 @@ function LoginPage() {
                                     fullWidth: true,
                                     size: "large",
                                     disabled: isSubmitting,
+                                    onClick: (e)=>{
+                                        console.log('🔴 BUTTON CLICKED!!!', e);
+                                        console.log('🔴 Button disabled?', isSubmitting);
+                                        console.log('🔴 Button type:', e.currentTarget.type);
+                                        handleButtonClick(e);
+                                    },
                                     children: isSubmitting ? 'Logging in...' : 'Login'
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.tsx",
-                                    lineNumber: 109,
+                                    lineNumber: 155,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/login/page.tsx",
-                            lineNumber: 84,
+                            lineNumber: 125,
                             columnNumber: 13
-                        }, this)
+                        }, this);
+                    }
                 }, void 0, false, {
                     fileName: "[project]/src/app/login/page.tsx",
-                    lineNumber: 78,
+                    lineNumber: 109,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/login/page.tsx",
-            lineNumber: 67,
+            lineNumber: 88,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/login/page.tsx",
-        lineNumber: 66,
+        lineNumber: 87,
         columnNumber: 5
     }, this);
 }

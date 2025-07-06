@@ -44,14 +44,12 @@ export default function DashboardPage() {
   useEffect(() => {
     console.log('🏢 Dashboard: Auth check - mounted:', mounted, 'isAuthenticated:', isAuthenticated, 'loading:', loading);
     
-    // Don't redirect while still loading user data
-    if (mounted && !loading && !isAuthenticated) {
-      console.log('❌ Dashboard: Not authenticated and not loading, redirecting to login');
+    // Simplified auth check - only redirect if clearly not authenticated
+    if (mounted && !isAuthenticated && !loading) {
+      console.log('❌ Dashboard: Not authenticated, redirecting to login');
       router.push('/login');
     } else if (mounted && isAuthenticated) {
       console.log('✅ Dashboard: User is authenticated, staying on dashboard');
-    } else if (mounted && loading) {
-      console.log('⏳ Dashboard: Still loading user data, waiting...');
     }
   }, [isAuthenticated, router, mounted, loading]);
 
@@ -60,9 +58,22 @@ export default function DashboardPage() {
     router.push('/');
   };
 
-  // Show loading while waiting for auth state or user data
-  if (!mounted || loading || (!isAuthenticated && !loading)) {
-    return null;
+  // Show loading while waiting for auth state
+  if (!mounted || loading) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Typography>Loading...</Typography>
+      </Container>
+    );
+  }
+
+  // If not authenticated, the useEffect will handle redirect
+  if (!isAuthenticated) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Typography>Redirecting to login...</Typography>
+      </Container>
+    );
   }
 
   return (
@@ -81,7 +92,7 @@ export default function DashboardPage() {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center">
@@ -97,7 +108,7 @@ export default function DashboardPage() {
           </Card>
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center">
@@ -113,7 +124,7 @@ export default function DashboardPage() {
           </Card>
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center">
@@ -129,7 +140,7 @@ export default function DashboardPage() {
           </Card>
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center">

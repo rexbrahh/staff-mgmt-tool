@@ -5,6 +5,7 @@ import passport from 'passport';
 import { connectDB } from './config/database';
 import './config/passport'; // Initialize passport strategies
 import authRoutes from './routes/auth.routes';
+import taskRoutes from './routes/task.routes';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(passport.initialize());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Connect to PostgreSQL via Prisma
 connectDB();
